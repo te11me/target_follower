@@ -1,0 +1,43 @@
+<launch>
+    <!-- 传感器驱动 -->
+    <include file="$(find astra_camera)/launch/astra.launch">
+        <arg name="depth_registration" value="true"/>
+        <arg name="publish_tf" value="false"/>
+    </include>
+
+    <node pkg="lslidar_driver" type="lslidar_driver_node" name="lidar" output="screen">
+        <param name="frame_id" value="laser"/>
+        <param name="scan_mode" value="DualReturn"/>
+        <param name="device_ip" value="192.168.1.200"/>
+    </node>
+
+    <!-- 深度处理节点 -->
+    <node pkg="depth_mask" type="depth_mask_node" name="depth_mask" output="screen">
+        <param name="use_cuda" value="true"/>
+        <param name="min_distance" value="0.6"/>
+        <param name="max_distance" value="1.0"/>
+    </node>
+
+    <!-- 目标跟踪节点 -->
+    <node pkg="target_follower" type="target_follower" name="target_follower" output="screen">
+        <param name="trt_engine" value="$(find target_follower)/models/mobilenet_v2.engine"/>
+        <param name="max_linear" value="0.5"/>
+        <param name="max_angular" value="1.0"/>
+        <param name="debug_level" value="1"/>
+    </node>
+
+    <!-- 建图节点 -->
+    <node pkg="hector_mapping" type="hector_mapping" name="hector_mapper" output="screen">
+        <param name="scan_topic" value="/scan"/>
+        <param name="map_size" value="4096"/>
+        <param name="map_resolution" value="0.05"/>
+        <param name="base_frame" value="base_link"/>
+        <param name="odom_frame" value="odom"/>
+    </node>
+
+    <!-- TF转换 -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_camera"
+        args="0.15 0 0.2 0 0 0 base_link camera_link 100"/>
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser"
+        args="0.2 0 0.1 0 0 0 base_link laser 100"/>
+</launch>

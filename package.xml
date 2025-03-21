@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>target_follower</name>
+  <version>1.0.0</version>
+  <description>Advanced target tracking system with deep learning and sensor fusion</description>
+
+  <maintainer email="support@robotics.com">Robotics Team</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <depend>roscpp</depend>
+  <depend>std_msgs</depend>
+  <depend>sensor_msgs</depend>
+  <depend>image_transport</depend>
+  <depend>cv_bridge</depend>
+  <depend>dynamic_reconfigure</depend>
+  <depend>tf</depend>
+  <depend>opencv</depend>
+
+  <build_depend>cuda</build_depend>
+  <build_depend>tensorrt</build_depend>
+
+  <exec_depend>hector_mapping</exec_depend>
+  <exec_depend>astra_camera</exec_depend>
+  <exec_depend>lslidar_driver</exec_depend>
+
+  <export>
+    <cpp cflags="-I${prefix}/include"/>
+  </export>
+</package>
